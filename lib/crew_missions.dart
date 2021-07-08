@@ -1,15 +1,15 @@
 class CrewMission {
-  int tasks;
+  int? tasks;
   String text;
-  String other;
-  List<String> tiles;
+  String? other;
+  List<String>? tiles;
   bool fivePlayerRule;
 
-  CrewMission.fromJson(Map<String, dynamic> json) {
-    tasks = json['tasks'];
-    text = json['text'];
-    other = json['other'];
-    fivePlayerRule = json['fivePlayerRule'] ?? false;
+  CrewMission.fromJson(Map<String, dynamic> json)
+      : text = json['text'] ?? '',
+        fivePlayerRule = json['fivePlayerRule'] ?? false,
+        tasks = json['tasks'],
+        other = json['other'] {
     if (json['tiles'] != null) {
       tiles = [for (var tile in json['tiles']) tile.toString()];
     }
@@ -17,7 +17,11 @@ class CrewMission {
 }
 
 class CrewMissions {
-  Map<int, CrewMission> _missionDetails;
+  late Map<int, CrewMission> _missionDetails;
+
+  CrewMissions.empty() {
+    _missionDetails = Map();
+  }
 
   CrewMissions.fromJson(Map<String, dynamic> json) {
     var details = Map<int, CrewMission>();
@@ -31,21 +35,15 @@ class CrewMissions {
   }
 
   bool usesFivePlayerRule(int missionId) {
-    return _missionDetails.containsKey(missionId)
-        ? _missionDetails[missionId].fivePlayerRule
-        : false;
+    return _missionDetails[missionId]?.fivePlayerRule ?? false;
   }
 
   String getMissionText(int missionId) {
-    return _missionDetails.containsKey(missionId)
-        ? _missionDetails[missionId].text
-        : 'Mission Not found';
+    return _missionDetails[missionId]?.text ?? 'Mission Not found';
   }
 
-  CrewMission getMission(int missionId) {
-    return _missionDetails.containsKey(missionId)
-        ? _missionDetails[missionId]
-        : null;
+  CrewMission? getMission(int missionId) {
+    return _missionDetails[missionId];
   }
 
   int getMaxMission() {

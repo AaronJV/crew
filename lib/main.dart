@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider<CrewDb>(create: (_) => CrewDb()),
         FutureProvider<CrewMissions>(
-            initialData: null,
+            initialData: CrewMissions.empty(),
             create: (_) async {
               final data =
                   await rootBundle.loadString('assets/json/missions.json');

@@ -16,7 +16,8 @@ class Missions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final crew = ModalRoute.of(context).settings.arguments as Crew;
+    final crew = ModalRoute.of(context)?.settings.arguments as Crew;
+
     return Scaffold(
         backgroundColor: _MissionColors.base,
         appBar: AppBar(
@@ -25,18 +26,17 @@ class Missions extends StatelessWidget {
         body: Column(children: [
           StreamBuilder(
               stream: Provider.of<CrewDb>(context).getCurtentMission(crew.id),
-              builder: (_, snapshot) => MissionDetails(snapshot)),
+              builder: (_, AsyncSnapshot<MissionAttempt> snapshot) => MissionDetails(snapshot)),
           Divider(thickness: 2, height: 0, color: _MissionColors.alternate),
           StreamBuilder(
             stream: Provider.of<CrewDb>(context).getCompletedMissions(crew.id),
-            builder: (context, snapshot) => Expanded(
+            builder: (context, AsyncSnapshot<List<MissionAttempt>> snapshot) => Expanded(
               child: ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: snapshot.hasData ? snapshot.data.length : 0,
-                  // reverse: true,
+                  itemCount: snapshot.data?.length ?? 0,
                   itemBuilder: (context, index) =>
-                      _CompletedMission(snapshot.data[index])),
+                      _CompletedMission(snapshot.data![index])),
             ),
           )
         ]));
@@ -62,7 +62,8 @@ class _CompletedMission extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(left: 10),
             child: Text(
-                'Completed on ${DateFormat.yMMMMd('en_US').format(missionAttempt.completionDate)}\nAfter ${missionAttempt.attempts} attempt${missionAttempt.attempts > 1 ? "s" : ""}'),
+                'Completed on ${DateFormat.yMMMMd('en_US').format(missionAttempt.completionDate!)}\n' +
+                'After ${missionAttempt.attempts} attempt${missionAttempt.attempts > 1 ? "s" : ""}'),
           ),
         ]));
   }

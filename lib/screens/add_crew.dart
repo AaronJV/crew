@@ -41,7 +41,7 @@ class AddCrewState extends State<AddCrew> {
   }
 
   void saveCrew(BuildContext context) {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       Provider.of<CrewDb>(context, listen: false)
           .addCrew(members: _names.values.toList(), name: _crewName)
           .then((_) => Navigator.pop(context))
@@ -112,7 +112,7 @@ class AddCrewMember extends StatelessWidget {
   final Null Function() onDelete;
   final Null Function(String) onUpdate;
 
-  AddCrewMember({this.enableDelete = false, key, this.onDelete, this.onUpdate})
+  AddCrewMember({this.enableDelete = false, Key? key, required this.onDelete, required this.onUpdate})
       : super(key: key);
 
   @override

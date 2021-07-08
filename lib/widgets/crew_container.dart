@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 class CrewContainer extends StatelessWidget {
   final Crew crew;
 
-  CrewContainer({this.crew});
+  CrewContainer({required this.crew});
 
   Widget _crewLabel() {
     if (crew.name == null) {
@@ -29,7 +29,7 @@ class CrewContainer extends StatelessWidget {
               color: Color.fromARGB(255, 210, 35, 42),
               fontWeight: FontWeight.bold)),
       Padding(padding: EdgeInsets.only(left: 10)),
-      Text(crew.name)
+      Text(crew.name!)
     ]));
   }
 
@@ -37,10 +37,10 @@ class CrewContainer extends StatelessWidget {
     var db = Provider.of<CrewDb>(context);
     var maxMission = Provider.of<CrewMissions>(context).getMaxMission();
     var createRow = <T>(
-            {String label,
-            Stream<T> stream,
+            {required String label,
+            required Stream<T?> stream,
             String placeholder = '',
-            String Function(T data) formatter}) =>
+            required String Function(T data) formatter}) =>
         Row(
           children: [
             Text(
@@ -51,8 +51,8 @@ class CrewContainer extends StatelessWidget {
             ),
             SizedBox(width: 10),
             StreamBuilder(
-              builder: (context, snapshot) => Text(
-                  snapshot.hasData ? formatter(snapshot.data) : placeholder),
+              builder: (context, AsyncSnapshot<T?> snapshot) => Text(
+                  snapshot.data != null ? formatter(snapshot.data!) : placeholder),
               stream: stream,
             ),
           ],

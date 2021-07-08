@@ -19,8 +19,8 @@ class MissionDetails extends StatefulWidget {
 
 class MissionDetailsState extends State<MissionDetails> {
   bool _collapsedMission = true;
-  ConfettiController _confettiController;
-  OverlayEntry _entry;
+  late ConfettiController _confettiController;
+  OverlayEntry? _entry;
 
   MissionDetailsState() {
     _confettiController = ConfettiController(duration: Duration(seconds: 1));
@@ -29,9 +29,8 @@ class MissionDetailsState extends State<MissionDetails> {
   @override
   void dispose() {
     _confettiController.stop();
-    if (_entry != null) {
-      _entry.remove();
-    }
+    _entry?.remove();
+
     super.dispose();
   }
 
@@ -55,7 +54,7 @@ class MissionDetailsState extends State<MissionDetails> {
                   ),
                 ],
               ));
-      Overlay.of(context).insert(_entry);
+      Overlay.of(context)?.insert(_entry!);
     }
     setState(() => _confettiController.play());
   }
@@ -66,7 +65,7 @@ class MissionDetailsState extends State<MissionDetails> {
       return SizedBox();
     }
 
-    var missionAttempt = widget.snapshot.data;
+    var missionAttempt = widget.snapshot.data!;
     final missionDetails = Provider.of<CrewMissions>(context);
     final maxMission = missionDetails.getMaxMission();
 
@@ -157,12 +156,12 @@ class _MissionActions extends StatelessWidget {
 }
 
 class _CurrentMissionDetails extends StatelessWidget {
-  final CrewMission _details;
+  final CrewMission? _details;
 
   _CurrentMissionDetails(this._details);
 
   Widget createTasks() {
-    if (_details == null || _details.tasks == null) {
+    if (_details?.tasks == null) {
       return SizedBox();
     }
 
@@ -180,7 +179,7 @@ class _CurrentMissionDetails extends StatelessWidget {
                 color: Colors.black12, spreadRadius: 0.5, offset: Offset(2, 2))
           ]),
       child: Text(
-        _details.tasks.toString(),
+        _details!.tasks.toString(),
         style: TextStyle(
             fontSize: 20,
             color: Colors.white,
@@ -191,13 +190,13 @@ class _CurrentMissionDetails extends StatelessWidget {
   }
 
   Widget createTiles() {
-    if (_details == null || _details.tiles == null) {
+    if (_details?.tiles == null) {
       return SizedBox();
     }
 
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: _details.tiles
+        children: _details!.tiles!
             .map((tile) => Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.all(5),
@@ -239,9 +238,9 @@ class _CurrentMissionDetails extends StatelessWidget {
       children: [
         createTasks(),
         createTiles(),
-        _details.other != null ? Text(_details.other) : SizedBox(),
+        _details!.other != null ? Text(_details!.other!) : SizedBox(),
         Text(
-          _details.text,
+          _details!.text,
           textAlign: TextAlign.center,
         ),
       ],

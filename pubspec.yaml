@@ -6,7 +6,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -21,7 +21,7 @@ dependencies:
   collapsible: ^1.0.0
   flutter_staggered_grid_view:
   intl: ^0.17.0
-  confetti: ^0.5.5
+  confetti: 0.6.0-nullsafety
 
   cupertino_icons: ^1.0.2
 
@@ -29,7 +29,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  source_gen:  
+  source_gen:
   moor_generator:
   build_runner:
 

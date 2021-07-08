@@ -25,9 +25,9 @@ class CrewList extends StatelessWidget {
                 child: StreamBuilder<List<Crew>>(
                     stream: Provider.of<CrewDb>(context).watchCrews(),
                     builder: (context, snapshot) => ListView.builder(
-                        itemCount: snapshot.hasData ? snapshot.data.length : 0,
+                        itemCount: snapshot.data?.length ?? 0,
                         itemBuilder: (context, index) =>
-                            CrewContainer(crew: snapshot.data[index]))))
+                            CrewContainer(crew: snapshot.data![index]))))
           ],
         ),
         floatingActionButton: FloatingActionButton(

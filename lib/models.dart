@@ -11,19 +11,19 @@ class ListConverter extends TypeConverter<List, String> {
   const ListConverter();
 
   @override
-  List mapToDart(String fromDb) {
+  List? mapToDart(String? fromDb) {
     return fromDb != null ? json.decode(fromDb) as List : null;
   }
 
   @override
-  String mapToSql(List value) {
+  String? mapToSql(List? value) {
     return value != null ? json.encode(value) : null;
   }
 }
 
 class Crews extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get name => text()();
+  TextColumn get name => text().nullable()();
   TextColumn get members => text().map(const ListConverter())();
   DateTimeColumn get startDate => dateTime().nullable()();
   DateTimeColumn get endDate => dateTime().nullable()();
@@ -61,7 +61,7 @@ class CrewDb extends _$CrewDb {
     return select(crews).watch();
   }
 
-  Future<int> addCrew({List<String> members, String name}) {
+  Future<int> addCrew({required List<String> members, required String name}) {
     return into(crews)
         .insert(CrewsCompanion(members: Value(members), name: Value(name)))
         .then((value) => into(missionAttempts).insert(
@@ -104,11 +104,11 @@ class CrewDb extends _$CrewDb {
           .go();
       await (update(missionAttempts)
             ..where((t) => t.id.equals(missionAttempt.id - 1)))
-          .write(MissionAttemptsCompanion(completionDate: Value(null)));
+          .write(MissionAttemptsCompanion(completionDate: Value.absent()));
     });
   }
 
-  Stream<DateTime> getStartDate(int crewId) {
+  Stream<DateTime?> getStartDate(int crewId) {
     return (select(missionAttempts)
           ..where((t) => t.crewId.equals(crewId) & t.completionDate.isNotNull())
           ..orderBy([(t) => OrderingTerm.asc(t.completionDate)])
@@ -121,11 +121,11 @@ class CrewDb extends _$CrewDb {
     return (select(missionAttempts)
           ..where((t) => (t.crewId.equals(crewId) & t.completionDate.isNull()))
           ..orderBy([(t) => OrderingTerm.desc(t.id)]))
-        .watchSingleOrNull()
+        .watchSingle()
         .map((value) => value.id);
   }
 
   Future<void> deleteCrew(int id) async {
-    return (delete(crews)..where((t) => t.id.equals(id))).go();
+    return (delete(crews)..where((t) => t.id.equals(id))).go().then((value) => null);
   }
 }
