@@ -38,6 +38,7 @@ flutter:
 
   assets:
     - assets/images/space.jpg
+    - assets/images/deepSea.jpg
     - assets/images/mission-marker.png
     - assets/images/mission-marker-gold.png
     - assets/images/fail-marker.png

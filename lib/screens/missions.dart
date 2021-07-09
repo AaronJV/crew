@@ -13,11 +13,12 @@ class _MissionColors {
 
 class Missions extends StatelessWidget {
   static const routeName = '/missions';
+  final Crew crew;
+
+  Missions(this.crew);
 
   @override
   Widget build(BuildContext context) {
-    final crew = ModalRoute.of(context)?.settings.arguments as Crew;
-
     return Scaffold(
         backgroundColor: _MissionColors.base,
         appBar: AppBar(
@@ -26,11 +27,13 @@ class Missions extends StatelessWidget {
         body: Column(children: [
           StreamBuilder(
               stream: Provider.of<CrewDb>(context).getCurtentMission(crew.id),
-              builder: (_, AsyncSnapshot<MissionAttempt> snapshot) => MissionDetails(snapshot)),
+              builder: (_, AsyncSnapshot<MissionAttempt> snapshot) =>
+                  MissionDetails(snapshot)),
           Divider(thickness: 2, height: 0, color: _MissionColors.alternate),
           StreamBuilder(
             stream: Provider.of<CrewDb>(context).getCompletedMissions(crew.id),
-            builder: (context, AsyncSnapshot<List<MissionAttempt>> snapshot) => Expanded(
+            builder: (context, AsyncSnapshot<List<MissionAttempt>> snapshot) =>
+                Expanded(
               child: ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
@@ -63,7 +66,7 @@ class _CompletedMission extends StatelessWidget {
             padding: EdgeInsets.only(left: 10),
             child: Text(
                 'Completed on ${DateFormat.yMMMMd('en_US').format(missionAttempt.completionDate!)}\n' +
-                'After ${missionAttempt.attempts} attempt${missionAttempt.attempts > 1 ? "s" : ""}'),
+                    'After ${missionAttempt.attempts} attempt${missionAttempt.attempts > 1 ? "s" : ""}'),
           ),
         ]));
   }

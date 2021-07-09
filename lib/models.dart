@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
@@ -7,16 +8,17 @@ import 'package:path/path.dart' as p;
 
 part 'models.g.dart';
 
-class ListConverter extends TypeConverter<List, String> {
+class ListConverter extends TypeConverter<List<String>, String> {
   const ListConverter();
 
   @override
-  List? mapToDart(String? fromDb) {
-    return fromDb != null ? json.decode(fromDb) as List : null;
+  List<String>? mapToDart(String? fromDb) {
+    List? list = fromDb != null ? json.decode(fromDb) as List : null;
+    return list?.map((val) => val.toString()).toList() ?? null;
   }
 
   @override
-  String? mapToSql(List? value) {
+  String? mapToSql(List<String>? value) {
     return value != null ? json.encode(value) : null;
   }
 }
@@ -58,7 +60,9 @@ class CrewDb extends _$CrewDb {
   int get schemaVersion => 1;
 
   Stream<List<Crew>> watchCrews() {
-    return select(crews).watch();
+    return select(crews).watch().handleError((err) {
+      log("error");
+    });
   }
 
   Future<int> addCrew({required List<String> members, required String name}) {
@@ -81,7 +85,7 @@ class CrewDb extends _$CrewDb {
         .watch();
   }
 
-  Future recordMissionSuccess(MissionAttempt mission) {
+  Future<void> recordMissionSuccess(MissionAttempt mission) {
     return (update(missionAttempts)
           ..where(
               (t) => t.id.equals(mission.id) & t.crewId.equals(mission.crewId)))
@@ -90,14 +94,14 @@ class CrewDb extends _$CrewDb {
             crewId: Value(mission.crewId), id: Value(mission.id + 1))));
   }
 
-  Future recordMissionFailure(MissionAttempt mission) {
+  Future<void> recordMissionFailure(MissionAttempt mission) {
     return (update(missionAttempts)
           ..where(
               (t) => t.id.equals(mission.id) & t.crewId.equals(mission.crewId)))
         .write(MissionAttemptsCompanion(attempts: Value(mission.attempts + 1)));
   }
 
-  Future resetMission(MissionAttempt missionAttempt) {
+  Future<void> resetMission(MissionAttempt missionAttempt) {
     return transaction(() async {
       await (delete(missionAttempts)
             ..where((t) => t.id.equals(missionAttempt.id)))
@@ -126,6 +130,17 @@ class CrewDb extends _$CrewDb {
   }
 
   Future<void> deleteCrew(int id) async {
-    return (delete(crews)..where((t) => t.id.equals(id))).go().then((value) => null);
+    return (delete(crews)..where((t) => t.id.equals(id)))
+        .go()
+        .then((value) => null);
+  }
+
+  Future<void> updateCrew(int? crew_id,
+      {required List<String> members, String? name}) {
+    return (update(crews)..where((t) => t.id.equals(crew_id)))
+        .write(CrewsCompanion(
+            members: Value(members),
+            name: name != null ? Value(name) : Value.absent()))
+        .then((value) => null);
   }
 }

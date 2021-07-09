@@ -5,18 +5,32 @@ import 'package:provider/provider.dart';
 
 class AddCrew extends StatefulWidget {
   static const routeName = '/add';
+  final Crew? crew;
+
+  AddCrew(this.crew);
 
   @override
   State<StatefulWidget> createState() {
-    return AddCrewState();
+    return AddCrewState(crew);
   }
 }
 
 class AddCrewState extends State<AddCrew> {
   final _formKey = GlobalKey<FormState>();
-  final _names = {0: '', 1: '', 2: ''};
-  int _count = 3;
-  final _crewName = '';
+  var _names = {0: '', 1: '', 2: ''};
+  var _count = 3;
+  var _crewNameController = TextEditingController();
+  int? _crewId;
+
+  AddCrewState(Crew? crew) {
+    if (crew != null) {
+      _crewId = crew.id;
+      _names = Map.from(crew.members.asMap());
+      if (crew.name != null) {
+        _crewNameController.value = TextEditingValue(text: crew.name!);
+      }
+    }
+  }
 
   addCrewMember() {
     if (_names.length < 5) {
@@ -42,10 +56,20 @@ class AddCrewState extends State<AddCrew> {
 
   void saveCrew(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      Provider.of<CrewDb>(context, listen: false)
-          .addCrew(members: _names.values.toList(), name: _crewName)
-          .then((_) => Navigator.pop(context))
-          .onError((error, stackTrace) => null);
+      var db = Provider.of<CrewDb>(context, listen: false);
+      if (_crewId != null) {
+        db
+            .updateCrew(_crewId,
+                members: _names.values.toList(), name: _crewNameController.text)
+            .then((_) => Navigator.pop(context))
+            .onError((error, stackTrace) => null);
+      } else {
+        db
+            .addCrew(
+                members: _names.values.toList(), name: _crewNameController.text)
+            .then((_) => Navigator.pop(context))
+            .onError((error, stackTrace) => null);
+      }
     }
   }
 
@@ -61,47 +85,78 @@ class AddCrewState extends State<AddCrew> {
               ]
             : null,
       ),
-      body: Form(
-        key: _formKey,
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
-          width: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              border: Border.all(color: Colors.white, width: 2),
-              color: Color.fromARGB(0xFF, 235, 235, 235),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black12,
-                    spreadRadius: 0.5,
-                    offset: Offset(2, 2))
-              ]),
-          child: Column(
-            children: [
-              ListView(
-                shrinkWrap: true,
-                children: _names.keys
-                    .map(
-                      (id) => AddCrewMember(
-                          key: Key(id.toString()),
-                          enableDelete: _names.length > 3,
-                          onDelete: () {
-                            removeCrewMember(id);
-                          },
-                          onUpdate: (value) {
-                            updateCrewMember(id, value);
-                          }),
-                    )
-                    .toList(),
+      body: Column(
+        children: [
+          Form(
+            key: _formKey,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(color: Colors.white, width: 2),
+                  color: Color.fromARGB(0xFF, 235, 235, 235),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        spreadRadius: 0.5,
+                        offset: Offset(2, 2))
+                  ]),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 20),
+                          child: TextFormField(
+                            controller: _crewNameController,
+                            decoration: InputDecoration(
+                                hintText: 'Crew Name (Optional)',
+                                prefixIcon: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.group,
+                                        size: 10,
+                                        color: Colors.black,
+                                      ),
+                                      Icon(Icons.label, size: 30)
+                                    ])),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ListView(
+                    shrinkWrap: true,
+                    children: _names.keys
+                        .map(
+                          (id) => AddCrewMember(
+                              key: Key(id.toString()),
+                              name: _names[id],
+                              enableDelete: _names.length > 3,
+                              onDelete: () {
+                                removeCrewMember(id);
+                              },
+                              onUpdate: (value) {
+                                updateCrewMember(id, value);
+                              }),
+                        )
+                        .toList(),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => saveCrew(context),
+                    child: Text('Save'),
+                  ),
+                  SizedBox(height: 10)
+                ],
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => saveCrew(context),
-                child: Text('Save'),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -111,8 +166,14 @@ class AddCrewMember extends StatelessWidget {
   final bool enableDelete;
   final Null Function() onDelete;
   final Null Function(String) onUpdate;
+  final String? name;
 
-  AddCrewMember({this.enableDelete = false, Key? key, required this.onDelete, required this.onUpdate})
+  AddCrewMember(
+      {this.enableDelete = false,
+      Key? key,
+      required this.onDelete,
+      required this.onUpdate,
+      this.name})
       : super(key: key);
 
   @override
@@ -129,6 +190,7 @@ class AddCrewMember extends StatelessWidget {
                 }
                 return null;
               },
+              initialValue: name,
               onChanged: onUpdate,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: InputDecoration(
@@ -141,7 +203,7 @@ class AddCrewMember extends StatelessWidget {
         IconButton(
           onPressed: enableDelete ? onDelete : null,
           icon: Icon(Icons.delete),
-          color: Colors.grey[enableDelete ? 800 : 300],
+          color: enableDelete ? Colors.grey[800] : Colors.white70,
         )
       ],
     );

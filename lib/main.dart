@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:crew/crew_missions.dart';
+import 'package:crew/crew_type.dart';
 import 'package:crew/screens/add_crew.dart';
 import 'package:crew/screens/crew_list.dart';
 import 'package:crew/screens/missions.dart';
@@ -11,10 +12,23 @@ import 'package:provider/provider.dart';
 import 'models.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(CrewApp());
 }
 
-class MyApp extends StatelessWidget {
+class CrewApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => CrewAppState();
+}
+
+class CrewAppState extends State<StatefulWidget> {
+  var crewType = CrewTypes.Space;
+
+  void setTheme(CrewTypes type) {
+    setState(() {
+      crewType = type;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -27,19 +41,27 @@ class MyApp extends StatelessWidget {
                   await rootBundle.loadString('assets/json/missions.json');
               return CrewMissions.fromJson(jsonDecode(data));
             },
-            lazy: false)
+            lazy: false),
       ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+      child: CrewType(
+        crewType: crewType,
+        changeType: (type) => setState(() => crewType = type),
+        child: Builder(
+          builder: (context) => MaterialApp(
+            title: 'Flutter Demo',
+            theme: CrewTheme.of(context).getThemeData(),
+            initialRoute: '/',
+            onGenerateRoute: (RouteSettings settings) {
+              var routes = <String, WidgetBuilder>{
+                '/': (_) => CrewList(),
+                AddCrew.routeName: (_) => AddCrew(settings.arguments as Crew?),
+                Missions.routeName: (_) => Missions(settings.arguments as Crew),
+              };
+              var builder = routes[settings.name]!;
+              return MaterialPageRoute(builder: (ctx) => builder(ctx));
+            },
+          ),
         ),
-        initialRoute: '/',
-        routes: {
-          '/': (_) => CrewList(),
-          AddCrew.routeName: (_) => AddCrew(),
-          Missions.routeName: (_) => Missions()
-        },
       ),
     );
   }

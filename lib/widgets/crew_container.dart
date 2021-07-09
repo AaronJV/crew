@@ -13,21 +13,15 @@ class CrewContainer extends StatelessWidget {
 
   CrewContainer({required this.crew});
 
-  Widget _crewLabel() {
+  Widget _crewLabel(BuildContext context) {
     if (crew.name == null) {
       return Container(
-          child: Text('CREW:',
-              style: TextStyle(
-                  color: Color.fromARGB(255, 210, 35, 42),
-                  fontWeight: FontWeight.bold)));
+          child: Text('CREW:', style: Theme.of(context).textTheme.headline5));
     }
 
     return Container(
         child: Row(children: [
-      Text('CREW:',
-          style: TextStyle(
-              color: Color.fromARGB(255, 210, 35, 42),
-              fontWeight: FontWeight.bold)),
+      Text('CREW:', style: Theme.of(context).textTheme.headline5),
       Padding(padding: EdgeInsets.only(left: 10)),
       Text(crew.name!)
     ]));
@@ -45,14 +39,14 @@ class CrewContainer extends StatelessWidget {
           children: [
             Text(
               label,
-              style: TextStyle(
-                color: Color.fromARGB(255, 210, 35, 42),
-              ),
+              style: Theme.of(context).textTheme.headline6,
             ),
             SizedBox(width: 10),
             StreamBuilder(
               builder: (context, AsyncSnapshot<T?> snapshot) => Text(
-                  snapshot.data != null ? formatter(snapshot.data!) : placeholder),
+                  snapshot.data != null
+                      ? formatter(snapshot.data!)
+                      : placeholder),
               stream: stream,
             ),
           ],
@@ -123,7 +117,7 @@ class CrewContainer extends StatelessWidget {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _crewLabel(),
+                          _crewLabel(context),
                           StaggeredGridView.count(
                             physics: NeverScrollableScrollPhysics(),
                             crossAxisCount: 2,
