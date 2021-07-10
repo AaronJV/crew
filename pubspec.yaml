@@ -43,4 +43,6 @@ flutter:
     - assets/images/mission-marker-gold.png
     - assets/images/fail-marker.png
     - assets/images/pass-marker.png
-    - assets/json/missions.json
+    - assets/json/space-missions.json
+    - assets/json/sea-missions.json
+    - assets/images/seaTasks.png

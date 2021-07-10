@@ -1,0 +1,67 @@
+{
+    "1": {
+        "text": "",
+        "tasks": 1
+    },
+    "2": {
+        "text": "",
+        "tasks": 2
+    },
+    "3": {
+        "text": "",
+        "tasks": 3
+    },
+    "4": {
+        "text": "",
+        "tasks": 4
+    },
+    "5": {
+        "text": "",
+        "tasks": 5
+    },
+    "6": {
+        "text": "",
+        "tasks": 6,
+        "other": "Choose one player, all tasks go to them"
+    },
+    "7": {
+        "text": "",
+        "tasks": 6
+    },
+    "8": {
+        "text": "",
+        "other": "No one may have won more two more 9's than anyone else"
+    },
+    "9": {
+        "text": "",
+        "tasks": 7,
+        "deadZone": true
+    },
+    "10": {
+        "text": "",
+        "tasks": 4,
+        "other": "Captain takes all tasks or gives them to one player. If given away, communication only before first trick"
+    },
+    "11": {
+        "text": "",
+        "tasks": 8,
+        "rapture": -2
+    },
+    "12": {
+        "text": "",
+        "other": "May not lead pink or submarines"
+    },
+    "13": {
+        "text": "",
+        "tasks": 5,
+        "other": "Captain takes all tasks or gives them to one player. If given away, communication only before first trick"
+    },
+    "14": {
+        "text": "",
+        "tasks": 6,
+        "realtime": {
+            "time": 210,
+            "deadZone": true
+        }
+    }
+}

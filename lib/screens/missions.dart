@@ -1,3 +1,4 @@
+import 'package:crew/crew_type.dart';
 import 'package:crew/models.dart';
 import 'package:crew/widgets/mission_details.dart';
 import 'package:crew/widgets/mission_marker.dart';
@@ -5,11 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-class _MissionColors {
-  static const base = Color.fromRGBO(0xE6, 0xE3, 0xD8, 1);
-  static const alternate = Color.fromRGBO(0xCF, 0xc9, 0xB3, 1);
-}
 
 class Missions extends StatelessWidget {
   static const routeName = '/missions';
@@ -20,7 +16,7 @@ class Missions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: _MissionColors.base,
+        backgroundColor: CrewTheme.of(context).missionBackgound,
         appBar: AppBar(
           title: Text("Missions"),
         ),
@@ -29,7 +25,10 @@ class Missions extends StatelessWidget {
               stream: Provider.of<CrewDb>(context).getCurtentMission(crew.id),
               builder: (_, AsyncSnapshot<MissionAttempt> snapshot) =>
                   MissionDetails(snapshot)),
-          Divider(thickness: 2, height: 0, color: _MissionColors.alternate),
+          Divider(
+              thickness: 2,
+              height: 0,
+              color: CrewTheme.of(context).missionBackgroundAlternate),
           StreamBuilder(
             stream: Provider.of<CrewDb>(context).getCompletedMissions(crew.id),
             builder: (context, AsyncSnapshot<List<MissionAttempt>> snapshot) =>
@@ -58,8 +57,8 @@ class _CompletedMission extends StatelessWidget {
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
             color: missionAttempt.id % 2 == 0
-                ? _MissionColors.base
-                : _MissionColors.alternate),
+                ? CrewTheme.of(context).missionBackgound
+                : CrewTheme.of(context).missionBackgroundAlternate),
         child: Row(children: [
           MissionMarker(missionId: missionAttempt.id, size: 30),
           Container(

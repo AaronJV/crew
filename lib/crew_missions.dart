@@ -1,3 +1,5 @@
+import 'package:crew/crew_type.dart';
+
 class CrewMission {
   int? tasks;
   String text;
@@ -17,36 +19,42 @@ class CrewMission {
 }
 
 class CrewMissions {
-  late Map<int, CrewMission> _missionDetails;
+  Map<CrewTypes, Map<int, CrewMission>> _missionDetails = Map();
 
-  CrewMissions.empty() {
-    _missionDetails = Map();
-  }
+  CrewMissions.empty();
 
-  CrewMissions.fromJson(Map<String, dynamic> json) {
-    var details = Map<int, CrewMission>();
-    json.forEach((k, v) {
-      var intKey = int.tryParse(k);
-      if (intKey != null) {
-        details[intKey] = CrewMission.fromJson(v);
-      }
+  CrewMissions.fromJsons(Map<CrewTypes, Map<String, dynamic>> jsons) {
+    jsons.forEach((crewType, json) {
+      var details = Map<int, CrewMission>();
+      json.forEach((k, v) {
+        var intKey = int.tryParse(k);
+        if (intKey != null) {
+          details[intKey] = CrewMission.fromJson(v);
+        }
+      });
+      _missionDetails[crewType] = details;
     });
-    _missionDetails = details;
   }
 
-  bool usesFivePlayerRule(int missionId) {
-    return _missionDetails[missionId]?.fivePlayerRule ?? false;
+  bool usesFivePlayerRule(int missionId, CrewTypes? crewType) {
+    return _missionDetails[crewType ?? CrewTypes.Space]?[missionId]
+            ?.fivePlayerRule ??
+        false;
   }
 
-  String getMissionText(int missionId) {
-    return _missionDetails[missionId]?.text ?? 'Mission Not found';
+  String getMissionText(int missionId, CrewTypes? crewType) {
+    return _missionDetails[crewType ?? CrewTypes.Space]?[missionId]?.text ??
+        'Mission Not found';
   }
 
-  CrewMission? getMission(int missionId) {
-    return _missionDetails[missionId];
+  CrewMission? getMission(int missionId, CrewTypes? crewType) {
+    return _missionDetails[crewType ?? CrewTypes.Space]?[missionId];
   }
 
-  int getMaxMission() {
-    return _missionDetails.keys.reduce((a, b) => a > b ? a : b);
+  int getMaxMission(CrewTypes? crewType) {
+    return _missionDetails[crewType ?? CrewTypes.Space]
+            ?.keys
+            .reduce((a, b) => a > b ? a : b) ??
+        -1;
   }
 }

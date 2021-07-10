@@ -1,3 +1,5 @@
+import 'dart:core';
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 enum CrewTypes { Space, Deep_Sea }
@@ -28,25 +30,101 @@ class CrewType extends InheritedWidget {
   }
 }
 
+makeOceanTasks(BuildContext context, int? tasks) {
+  if (tasks == null) {
+    return const SizedBox();
+  }
+
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      Container(
+        height: 60,
+        width: 60,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/images/seaTasks.png'),
+              fit: BoxFit.cover),
+        ),
+      ),
+      Text(
+        tasks.toString(),
+        style: TextStyle(
+            color: Color(0xFFCD1414),
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            shadows: [
+              Shadow(
+                  blurRadius: 2,
+                  color: Colors.black.withAlpha(127),
+                  offset: Offset.fromDirection(0.25 * pi, 2))
+            ]),
+      )
+    ],
+  );
+}
+
 var spaceTheme = CrewTheme(
     primaryColor: Colors.blueGrey,
     textAccentColor: Color.fromARGB(255, 210, 35, 42),
-    backgroundAsset: 'assets/images/space.jpg');
-var oceanTheme = CrewTheme(
+    missionBackgound: Color(0xFFE6E3D8),
+    missionBackgroundAlternate: Color(0xFFCFC9B3),
+    backgroundAsset: 'assets/images/space.jpg',
+    taskBuilder: (context, tasks) {
+      if (tasks == null) {
+        return const SizedBox();
+      }
+      return Container(
+        margin: EdgeInsets.symmetric(vertical: 5),
+        width: 30,
+        height: 45,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            color: Colors.indigo.shade900,
+            border: Border.all(color: Colors.white, width: 2),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black12,
+                  spreadRadius: 0.5,
+                  offset: Offset(2, 2))
+            ]),
+        child: Text(
+          tasks.toString(),
+          style: TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              backgroundColor: Colors.indigo[900]),
+        ),
+      );
+    });
+var oceanTheme = () => CrewTheme(
     primaryColor: createMaterialColor(Colors.blue[900]!),
     textAccentColor: Colors.blue[900],
-    backgroundAsset: 'assets/images/deepSea.jpg');
+    missionBackgound: Color(0xFFCDDEEC),
+    missionBackgroundAlternate: Color(0xFFB9C5E0),
+    backgroundAsset: 'assets/images/deepSea.jpg',
+    taskBuilder: (c, t) => makeOceanTasks(c, t));
 
 class CrewTheme {
   final MaterialColor primaryColor;
   final String backgroundAsset;
+  final Color missionBackgound;
+  final Color missionBackgroundAlternate;
+  final Color? textAccentColor;
 
-  Color? textAccentColor;
+  late final Widget Function(BuildContext, int?) getTasksWidget;
 
   CrewTheme(
       {required this.primaryColor,
       required this.backgroundAsset,
-      this.textAccentColor});
+      required this.missionBackgound,
+      required this.missionBackgroundAlternate,
+      this.textAccentColor,
+      required Widget Function(BuildContext, int?) taskBuilder}) {
+    getTasksWidget = taskBuilder;
+  }
 
   ThemeData getThemeData() {
     return ThemeData(
@@ -71,7 +149,7 @@ class CrewTheme {
 
     switch (type.crewType) {
       case CrewTypes.Deep_Sea:
-        return oceanTheme;
+        return oceanTheme();
       case CrewTypes.Space:
       default:
         return spaceTheme;

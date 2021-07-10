@@ -1,3 +1,4 @@
+import 'package:crew/crew_type.dart';
 import 'package:crew/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,9 @@ class AddCrewState extends State<AddCrew> {
       } else {
         db
             .addCrew(
-                members: _names.values.toList(), name: _crewNameController.text)
+                members: _names.values.toList(),
+                name: _crewNameController.text,
+                crewType: CrewType.of(context)?.crewType)
             .then((_) => Navigator.pop(context))
             .onError((error, stackTrace) => null);
       }
@@ -85,76 +88,85 @@ class AddCrewState extends State<AddCrew> {
               ]
             : null,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Form(
-            key: _formKey,
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
-              width: double.infinity,
+          Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  border: Border.all(color: Colors.white, width: 2),
-                  color: Color.fromARGB(0xFF, 235, 235, 235),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black12,
-                        spreadRadius: 0.5,
-                        offset: Offset(2, 2))
-                  ]),
-              child: Column(
-                children: [
-                  Row(
+                  image: DecorationImage(
+                      image: AssetImage(CrewTheme.of(context).backgroundAsset),
+                      fit: BoxFit.cover))),
+          Column(
+            children: [
+              Form(
+                key: _formKey,
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      border: Border.all(color: Colors.white, width: 2),
+                      color: Color.fromARGB(0xFF, 235, 235, 235),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black12,
+                            spreadRadius: 0.5,
+                            offset: Offset(2, 2))
+                      ]),
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 20),
-                          child: TextFormField(
-                            controller: _crewNameController,
-                            decoration: InputDecoration(
-                                hintText: 'Crew Name (Optional)',
-                                prefixIcon: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.group,
-                                        size: 10,
-                                        color: Colors.black,
-                                      ),
-                                      Icon(Icons.label, size: 30)
-                                    ])),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 20),
+                              child: TextFormField(
+                                controller: _crewNameController,
+                                decoration: InputDecoration(
+                                    hintText: 'Crew Name (Optional)',
+                                    prefixIcon: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.group,
+                                            size: 10,
+                                            color: Colors.black,
+                                          ),
+                                          Icon(Icons.label, size: 30)
+                                        ])),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
+                      ListView(
+                        shrinkWrap: true,
+                        children: _names.keys
+                            .map(
+                              (id) => AddCrewMember(
+                                  key: Key(id.toString()),
+                                  name: _names[id],
+                                  enableDelete: _names.length > 3,
+                                  onDelete: () {
+                                    removeCrewMember(id);
+                                  },
+                                  onUpdate: (value) {
+                                    updateCrewMember(id, value);
+                                  }),
+                            )
+                            .toList(),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => saveCrew(context),
+                        child: Text('Save'),
+                      ),
+                      SizedBox(height: 10)
                     ],
                   ),
-                  ListView(
-                    shrinkWrap: true,
-                    children: _names.keys
-                        .map(
-                          (id) => AddCrewMember(
-                              key: Key(id.toString()),
-                              name: _names[id],
-                              enableDelete: _names.length > 3,
-                              onDelete: () {
-                                removeCrewMember(id);
-                              },
-                              onUpdate: (value) {
-                                updateCrewMember(id, value);
-                              }),
-                        )
-                        .toList(),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => saveCrew(context),
-                    child: Text('Save'),
-                  ),
-                  SizedBox(height: 10)
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ],
       ),

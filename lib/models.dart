@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:crew/crew_type.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,8 +24,20 @@ class ListConverter extends TypeConverter<List<String>, String> {
   }
 }
 
+class CrewTypeConvertor extends TypeConverter<CrewTypes, int> {
+  const CrewTypeConvertor();
+
+  @override
+  CrewTypes? mapToDart(int? fromDb) => CrewTypes.values[fromDb!];
+
+  @override
+  int? mapToSql(CrewTypes? type) => type!.index;
+}
+
 class Crews extends Table {
   IntColumn get id => integer().autoIncrement()();
+  IntColumn get crewType =>
+      integer().map(const CrewTypeConvertor()).withDefault(const Constant(0))();
   TextColumn get name => text().nullable()();
   TextColumn get members => text().map(const ListConverter())();
   DateTimeColumn get startDate => dateTime().nullable()();
@@ -57,17 +70,36 @@ class CrewDb extends _$CrewDb {
   CrewDb() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3;
 
-  Stream<List<Crew>> watchCrews() {
-    return select(crews).watch().handleError((err) {
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+      onCreate: (Migrator m) => m.createAll(),
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from == 1) {
+          await m.addColumn(crews, crews.crewType);
+        }
+      });
+
+  Stream<List<Crew>> watchCrews({CrewTypes? crewType}) {
+    return (select(crews)
+          ..where((t) => t.crewType.equals(crewType?.index ?? 0)))
+        .watch()
+        .map((event) => event)
+        .handleError((err) {
       log("error");
     });
   }
 
-  Future<int> addCrew({required List<String> members, required String name}) {
+  Future<int> addCrew(
+      {required List<String> members,
+      required String name,
+      CrewTypes? crewType}) {
     return into(crews)
-        .insert(CrewsCompanion(members: Value(members), name: Value(name)))
+        .insert(CrewsCompanion(
+            members: Value(members),
+            name: Value(name),
+            crewType: Value(crewType ?? CrewTypes.Space)))
         .then((value) => into(missionAttempts).insert(
             MissionAttemptsCompanion(crewId: Value(value), id: Value(1))));
   }
@@ -104,11 +136,15 @@ class CrewDb extends _$CrewDb {
   Future<void> resetMission(MissionAttempt missionAttempt) {
     return transaction(() async {
       await (delete(missionAttempts)
-            ..where((t) => t.id.equals(missionAttempt.id)))
+            ..where((t) =>
+                t.id.equals(missionAttempt.id) &
+                t.crewId.equals(missionAttempt.crewId)))
           .go();
       await (update(missionAttempts)
-            ..where((t) => t.id.equals(missionAttempt.id - 1)))
-          .write(MissionAttemptsCompanion(completionDate: Value.absent()));
+            ..where((t) =>
+                t.id.equals(missionAttempt.id - 1) &
+                t.crewId.equals(missionAttempt.crewId)))
+          .write(MissionAttemptsCompanion(completionDate: Value(null)));
     });
   }
 

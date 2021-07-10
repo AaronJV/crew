@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:collapsible/collapsible.dart';
 import 'package:confetti/confetti.dart';
 import 'package:crew/crew_missions.dart';
+import 'package:crew/crew_type.dart';
 import 'package:crew/models.dart';
 import 'package:crew/widgets/mission_marker.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,8 @@ class MissionDetailsState extends State<MissionDetails> {
 
     var missionAttempt = widget.snapshot.data!;
     final missionDetails = Provider.of<CrewMissions>(context);
-    final maxMission = missionDetails.getMaxMission();
+    final maxMission =
+        missionDetails.getMaxMission(CrewType.of(context)?.crewType);
 
     return Column(
       children: [
@@ -107,8 +109,8 @@ class MissionDetailsState extends State<MissionDetails> {
         Collapsible(
             collapsed: _collapsedMission,
             axis: CollapsibleAxis.vertical,
-            child: _CurrentMissionDetails(
-                missionDetails.getMission(missionAttempt.id))),
+            child: _CurrentMissionDetails(missionDetails.getMission(
+                missionAttempt.id, CrewType.of(context)?.crewType))),
         missionAttempt.id <= maxMission
             ? Text('Attempt number: ${missionAttempt.attempts}')
             : SizedBox(),
@@ -160,35 +162,6 @@ class _CurrentMissionDetails extends StatelessWidget {
 
   _CurrentMissionDetails(this._details);
 
-  Widget createTasks() {
-    if (_details?.tasks == null) {
-      return SizedBox();
-    }
-
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      width: 30,
-      height: 45,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          color: Colors.indigo.shade900,
-          border: Border.all(color: Colors.white, width: 2),
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black12, spreadRadius: 0.5, offset: Offset(2, 2))
-          ]),
-      child: Text(
-        _details!.tasks.toString(),
-        style: TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            backgroundColor: Colors.indigo[900]),
-      ),
-    );
-  }
-
   Widget createTiles() {
     if (_details?.tiles == null) {
       return SizedBox();
@@ -220,7 +193,7 @@ class _CurrentMissionDetails extends StatelessWidget {
                   Text(tile,
                       style: TextStyle(
                           fontSize: 20,
-                          color: Color.fromRGBO(0x57, 0x2E, 0x91, 1),
+                          color: Color(0xFF572E91),
                           fontWeight: FontWeight.bold))
                 ])))
             .toList());
@@ -236,7 +209,7 @@ class _CurrentMissionDetails extends StatelessWidget {
     }
     return Column(
       children: [
-        createTasks(),
+        CrewTheme.of(context).getTasksWidget(context, _details?.tasks),
         createTiles(),
         _details!.other != null ? Text(_details!.other!) : SizedBox(),
         Text(

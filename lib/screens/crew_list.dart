@@ -34,9 +34,9 @@ class CrewList extends StatelessWidget {
                             AssetImage(CrewTheme.of(context).backgroundAsset),
                         fit: BoxFit.cover))),
             Container(
-                color: Colors.grey.withAlpha(100),
                 child: StreamBuilder<List<Crew>>(
-                    stream: Provider.of<CrewDb>(context).watchCrews(),
+                    stream: Provider.of<CrewDb>(context)
+                        .watchCrews(crewType: CrewType.of(context)?.crewType),
                     builder: (context, snapshot) => ListView.builder(
                         itemCount: snapshot.data?.length ?? 0,
                         itemBuilder: (context, index) =>

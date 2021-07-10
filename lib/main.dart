@@ -37,9 +37,14 @@ class CrewAppState extends State<StatefulWidget> {
         FutureProvider<CrewMissions>(
             initialData: CrewMissions.empty(),
             create: (_) async {
-              final data =
-                  await rootBundle.loadString('assets/json/missions.json');
-              return CrewMissions.fromJson(jsonDecode(data));
+              final spaceData = await rootBundle
+                  .loadString('assets/json/space-missions.json');
+              final seaData =
+                  await rootBundle.loadString('assets/json/sea-missions.json');
+              return CrewMissions.fromJsons({
+                CrewTypes.Space: jsonDecode(spaceData),
+                CrewTypes.Deep_Sea: jsonDecode(seaData)
+              });
             },
             lazy: false),
       ],
