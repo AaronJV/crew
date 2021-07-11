@@ -1,4 +1,4 @@
-import 'package:crew/crew_type.dart';
+import 'package:crew/crew_quests.dart';
 import 'package:crew/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +69,7 @@ class AddCrewState extends State<AddCrew> {
             .addCrew(
                 members: _names.values.toList(),
                 name: _crewNameController.text,
-                crewType: CrewType.of(context)?.crewType)
+                quest: CrewQuests.of(context).selectedQuest)
             .then((_) => Navigator.pop(context))
             .onError((error, stackTrace) => null);
       }
@@ -93,7 +93,8 @@ class AddCrewState extends State<AddCrew> {
           Container(
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(CrewTheme.of(context).backgroundAsset),
+                      image: AssetImage(
+                          CrewQuests.of(context).getTheme().backgroundAsset),
                       fit: BoxFit.cover))),
           Column(
             children: [

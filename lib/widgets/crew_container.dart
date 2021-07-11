@@ -1,5 +1,4 @@
-import 'package:crew/crew_missions.dart';
-import 'package:crew/crew_type.dart';
+import 'package:crew/crew_quests.dart';
 import 'package:crew/models.dart';
 import 'package:crew/screens/add_crew.dart';
 import 'package:crew/screens/missions.dart';
@@ -30,8 +29,7 @@ class CrewContainer extends StatelessWidget {
 
   Widget _crewStats(BuildContext context) {
     var db = Provider.of<CrewDb>(context);
-    var maxMission = Provider.of<CrewMissions>(context)
-        .getMaxMission(CrewType.of(context)?.crewType);
+    var maxMission = CrewQuests.of(context).getMaxMission();
     var createRow = <T>(
             {required String label,
             required Stream<T?> stream,

@@ -1,8 +1,6 @@
-import 'package:crew/crew_missions.dart';
-import 'package:crew/crew_type.dart';
+import 'package:crew/crew_quests.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MissionMarker extends StatelessWidget {
   final int missionId;
@@ -19,8 +17,7 @@ class MissionMarker extends StatelessWidget {
         width: size,
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: Provider.of<CrewMissions>(context).usesFivePlayerRule(
-                        missionId, CrewType.of(context)?.crewType)
+                image: CrewQuests.of(context).usesFivePlayerRule(missionId)
                     ? AssetImage('assets/images/mission-marker-gold.png')
                     : AssetImage('assets/images/mission-marker.png'))),
         child: Text(

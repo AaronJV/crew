@@ -1,0 +1,72 @@
+{
+    "name": "Mission Deep Sea",
+    "theme": "ocean",
+    "id": "deepSea",
+    "missions": [
+        {
+            "text": "",
+            "tasks": 1
+        },
+        {
+            "text": "",
+            "tasks": 2
+        },
+        {
+            "text": "",
+            "tasks": 3
+        },
+        {
+            "text": "",
+            "tasks": 4
+        },
+        {
+            "text": "",
+            "tasks": 5
+        },
+        {
+            "text": "",
+            "tasks": 6,
+            "other": "Choose one player, all tasks go to them"
+        },
+        {
+            "text": "",
+            "tasks": 6
+        },
+        {
+            "text": "",
+            "other": "No one may have won more two more 9's than anyone else"
+        },
+        {
+            "text": "",
+            "tasks": 7,
+            "deadZone": true
+        },
+        {
+            "text": "",
+            "tasks": 4,
+            "other": "Captain takes all tasks or gives them to one player. If given away, communication only before first trick"
+        },
+        {
+            "text": "",
+            "tasks": 8,
+            "rapture": -2
+        },
+        {
+            "text": "",
+            "other": "May not lead pink or submarines"
+        },
+        {
+            "text": "",
+            "tasks": 5,
+            "other": "Captain takes all tasks or gives them to one player. If given away, communication only before first trick"
+        },
+        {
+            "text": "",
+            "tasks": 6,
+            "realtime": {
+                "time": 210,
+                "deadZone": true
+            }
+        }
+    ]
+}

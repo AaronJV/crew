@@ -1,4 +1,4 @@
-import 'package:crew/crew_type.dart';
+import 'package:crew/crew_quests.dart';
 import 'package:crew/models.dart';
 import 'package:crew/widgets/mission_details.dart';
 import 'package:crew/widgets/mission_marker.dart';
@@ -16,7 +16,7 @@ class Missions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: CrewTheme.of(context).missionBackgound,
+        backgroundColor: CrewQuests.of(context).getTheme().missionBackgound,
         appBar: AppBar(
           title: Text("Missions"),
         ),
@@ -28,7 +28,8 @@ class Missions extends StatelessWidget {
           Divider(
               thickness: 2,
               height: 0,
-              color: CrewTheme.of(context).missionBackgroundAlternate),
+              color:
+                  CrewQuests.of(context).getTheme().missionBackgroundAlternate),
           StreamBuilder(
             stream: Provider.of<CrewDb>(context).getCompletedMissions(crew.id),
             builder: (context, AsyncSnapshot<List<MissionAttempt>> snapshot) =>
@@ -57,8 +58,8 @@ class _CompletedMission extends StatelessWidget {
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
             color: missionAttempt.id % 2 == 0
-                ? CrewTheme.of(context).missionBackgound
-                : CrewTheme.of(context).missionBackgroundAlternate),
+                ? CrewQuests.of(context).getTheme().missionBackgound
+                : CrewQuests.of(context).getTheme().missionBackgroundAlternate),
         child: Row(children: [
           MissionMarker(missionId: missionAttempt.id, size: 30),
           Container(

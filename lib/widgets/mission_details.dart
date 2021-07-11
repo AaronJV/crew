@@ -2,8 +2,7 @@ import 'dart:math';
 
 import 'package:collapsible/collapsible.dart';
 import 'package:confetti/confetti.dart';
-import 'package:crew/crew_missions.dart';
-import 'package:crew/crew_type.dart';
+import 'package:crew/crew_quests.dart';
 import 'package:crew/models.dart';
 import 'package:crew/widgets/mission_marker.dart';
 import 'package:flutter/material.dart';
@@ -67,9 +66,8 @@ class MissionDetailsState extends State<MissionDetails> {
     }
 
     var missionAttempt = widget.snapshot.data!;
-    final missionDetails = Provider.of<CrewMissions>(context);
-    final maxMission =
-        missionDetails.getMaxMission(CrewType.of(context)?.crewType);
+    final missionDetails = CrewQuests.of(context);
+    final maxMission = missionDetails.getMaxMission();
 
     return Column(
       children: [
@@ -109,8 +107,8 @@ class MissionDetailsState extends State<MissionDetails> {
         Collapsible(
             collapsed: _collapsedMission,
             axis: CollapsibleAxis.vertical,
-            child: _CurrentMissionDetails(missionDetails.getMission(
-                missionAttempt.id, CrewType.of(context)?.crewType))),
+            child: _CurrentMissionDetails(
+                missionDetails.getMission(missionAttempt.id))),
         missionAttempt.id <= maxMission
             ? Text('Attempt number: ${missionAttempt.attempts}')
             : SizedBox(),
@@ -209,7 +207,9 @@ class _CurrentMissionDetails extends StatelessWidget {
     }
     return Column(
       children: [
-        CrewTheme.of(context).getTasksWidget(context, _details?.tasks),
+        CrewQuests.of(context)
+            .getTheme()
+            .getTasksWidget(context, _details?.tasks),
         createTiles(),
         _details!.other != null ? Text(_details!.other!) : SizedBox(),
         Text(

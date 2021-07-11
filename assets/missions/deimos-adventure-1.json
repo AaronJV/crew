@@ -1,0 +1,20 @@
+{
+    "name": "Deimos Adventure 1",
+    "theme": "spcae",
+    "id": "47f81193-06f5-5a93-8fe9-6ad6658ebcf5",
+    "missions": [
+        {
+            "text": "You receive a radio message near Deimos, one of the Martian moons. Based on your photos, a research team is now working there and is asking for your help. Locate the ship and prepare for the docking maneuver by precisely approaching the two lock modules. A 4-card must win at least one 9-card",
+            "fivePlayerRule": true
+        },
+        {
+            "text": "After a successful docking, you meet up with the scientist on board the Morphinos, Dr. Z. Taylor. He reports that his colleagues are scattered across Deimos taking soil samples. However, some of the jobs require your specialized equipment. Make your way to the specified coordinates to assist the researchers. Your commander must win exactly 3 tricks. These tricks must not include cards with the value of 7, 8, or 9.",
+            "fivePlayerRule": true
+        },
+        {
+            "text": "You locate the site immediately. The rock is deep black and seems to swallow any light. An analysis of the surface reveals such a dense and interwoven molecular structure that even your drill may not be able to break through. Let’s see how far you can go. A task not completed does not terminate the mission. How many tasks will you complete?",
+            "fivePlayerRule": true,
+            "tasks": 22
+        }
+    ]
+}
