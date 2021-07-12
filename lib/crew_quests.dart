@@ -1,12 +1,15 @@
 import 'package:crew/crew_theme.dart';
 import 'package:flutter/widgets.dart';
 
+enum CommunicationType { DEAD_ZONE, NONE, UNFAMILIAR_TERRAIN, RAPTURE_OF_DEEP }
+
 class CrewMission {
   int? tasks;
   String text;
   String? other;
   List<String>? tiles;
   bool fivePlayerRule;
+  CommunicationType? commType;
 
   CrewMission.fromJson(Map<String, dynamic> json)
       : text = json['text'] ?? '',
@@ -15,6 +18,15 @@ class CrewMission {
         other = json['other'] {
     if (json['tiles'] != null) {
       tiles = [for (var tile in json['tiles']) tile.toString()];
+    }
+    if (json['communication'] != null) {
+      var value = json['communication'].toString().toUpperCase();
+      for (var type in CommunicationType.values) {
+        if (type.toString() == 'CommunicationType.' + value) {
+          commType = type;
+          break;
+        }
+      }
     }
   }
 }

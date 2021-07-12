@@ -39,7 +39,7 @@
         {
             "text": "",
             "tasks": 7,
-            "deadZone": true
+            "communication": "DEAD_ZONE"
         },
         {
             "text": "",
@@ -49,7 +49,7 @@
         {
             "text": "",
             "tasks": 8,
-            "rapture": -2
+            "communication": "RAPTURE_OF_DEEP"
         },
         {
             "text": "",
@@ -65,8 +65,53 @@
             "tasks": 6,
             "realtime": {
                 "time": 210,
-                "deadZone": true
+                "communication": "DEAD_ZONE"
             }
+        },
+        {
+            "text": "",
+            "tasks": 6,
+            "realtime": {
+                "time": 180,
+                "communication": "RAPTURE_OF_DEEP"
+            }
+        },
+        {
+            "text": "",
+            "tasks": 6,
+            "realtime": {
+                "time": 150,
+                "communication": "NONE"
+            }
+        },
+        {
+            "text": "",
+            "tasks": 9,
+            "freeSelection": true
+        },
+        {
+            "text": "",
+            "tasks": 9
+        },
+        {
+            "text": "",
+            "other": "Captain's first selection MUST be the most difficult task",
+            "tasks": 9
+        },
+        {
+            "text": "",
+            "tasks": 10,
+            "communication": "UNFAMILIAR_TERRAIN"
+        },
+        {
+            "text": "",
+            "other": "At no point may a player have won two more color 1s than any other player",
+            "communication": "UNFAMILIAR_TERRAIN"
+        },
+        {
+            "text": "",
+            "tasks": 11,
+            "communication": "UNFAMILIAR_TERRAIN"
         }
     ]
 }

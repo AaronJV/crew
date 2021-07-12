@@ -15,7 +15,7 @@ makeOceanTasks(BuildContext context, int? tasks) {
         width: 60,
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/images/seaTasks.png'),
+              image: AssetImage('assets/images/ocean/difficulty.png'),
               fit: BoxFit.cover),
         ),
       ),
@@ -39,6 +39,8 @@ makeOceanTasks(BuildContext context, int? tasks) {
 class CrewTheme {
   final MaterialColor primaryColor;
   final String backgroundAsset;
+  final String passMarkerAsset;
+  final String failMarkerAsset;
   final Color missionBackgound;
   final Color missionBackgroundAlternate;
   final Color? textAccentColor;
@@ -48,6 +50,8 @@ class CrewTheme {
   CrewTheme(
       {required this.primaryColor,
       required this.backgroundAsset,
+      required this.passMarkerAsset,
+      required this.failMarkerAsset,
       required this.missionBackgound,
       required this.missionBackgroundAlternate,
       this.textAccentColor,
@@ -75,7 +79,9 @@ class CrewTheme {
       textAccentColor: Colors.blue[900],
       missionBackgound: Color(0xFFCDDEEC),
       missionBackgroundAlternate: Color(0xFFB9C5E0),
-      backgroundAsset: 'assets/images/deepSea.jpg',
+      backgroundAsset: 'assets/images/ocean/background.jpg',
+      passMarkerAsset: 'assets/images/ocean/pass-marker.png',
+      failMarkerAsset: 'assets/images/ocean/fail-marker.png',
       taskBuilder: (c, t) => makeOceanTasks(c, t));
 
   static CrewTheme getSpaceTheme() => CrewTheme(
@@ -83,7 +89,9 @@ class CrewTheme {
       textAccentColor: Color.fromARGB(255, 210, 35, 42),
       missionBackgound: Color(0xFFE6E3D8),
       missionBackgroundAlternate: Color(0xFFCFC9B3),
-      backgroundAsset: 'assets/images/space.jpg',
+      backgroundAsset: 'assets/images/space/background.jpg',
+      passMarkerAsset: 'assets/images/space/pass-marker.png',
+      failMarkerAsset: 'assets/images/space/fail-marker.png',
       taskBuilder: (context, tasks) {
         if (tasks == null) {
           return const SizedBox();

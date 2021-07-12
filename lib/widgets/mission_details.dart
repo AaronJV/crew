@@ -139,7 +139,9 @@ class _MissionActions extends StatelessWidget {
                 width: _buttonSize,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage('assets/images/pass-marker.png'))))),
+                        image: AssetImage(CrewQuests.of(context)
+                            .getTheme()
+                            .passMarkerAsset))))),
         GestureDetector(
           onTap: () => Provider.of<CrewDb>(context, listen: false)
               .recordMissionFailure(missionAttempt),
@@ -148,7 +150,8 @@ class _MissionActions extends StatelessWidget {
               width: _buttonSize,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage('assets/images/fail-marker.png')))),
+                      image: AssetImage(
+                          CrewQuests.of(context).getTheme().failMarkerAsset)))),
         )
       ]),
     );
@@ -197,6 +200,103 @@ class _CurrentMissionDetails extends StatelessWidget {
             .toList());
   }
 
+  Widget createTasksMarker(BuildContext context) {
+    var tasksMarker = CrewQuests.of(context)
+        .getTheme()
+        .getTasksWidget(context, _details?.tasks);
+
+    if (_details?.commType == CommunicationType.DEAD_ZONE ||
+        _details?.commType == CommunicationType.RAPTURE_OF_DEEP) {
+      var text = _details!.commType == CommunicationType.DEAD_ZONE ? '?' : '-2';
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          tasksMarker,
+          SizedBox(width: 20),
+          Stack(
+            alignment: Alignment.centerLeft,
+            children: [
+              Row(
+                children: [
+                  SizedBox(width: 45),
+                  Container(
+                    width: 30,
+                    height: 50,
+                    alignment: Alignment.center,
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.all(Radius.elliptical(30, 50)),
+                        gradient: LinearGradient(
+                            colors: [
+                              Colors.white.withOpacity(0),
+                              Colors.white,
+                            ],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight)),
+                  ),
+                ],
+              ),
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                          CrewQuests.of(context).getTheme().passMarkerAsset),
+                      fit: BoxFit.cover),
+                ),
+              ),
+            ],
+          )
+        ],
+      );
+    }
+
+    if (_details?.commType == CommunicationType.NONE ||
+        _details?.commType == CommunicationType.UNFAMILIAR_TERRAIN) {
+      var icon = _details?.commType == CommunicationType.NONE
+          ? Icons.hide_source
+          : Icons.help_outline;
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          tasksMarker,
+          SizedBox(width: 20),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                          CrewQuests.of(context).getTheme().passMarkerAsset),
+                      fit: BoxFit.cover),
+                ),
+              ),
+              Icon(
+                icon,
+                color: Colors.red,
+                size: 50,
+              ),
+            ],
+          )
+        ],
+      );
+    }
+
+    return tasksMarker;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_details == null) {
@@ -207,9 +307,7 @@ class _CurrentMissionDetails extends StatelessWidget {
     }
     return Column(
       children: [
-        CrewQuests.of(context)
-            .getTheme()
-            .getTasksWidget(context, _details?.tasks),
+        createTasksMarker(context),
         createTiles(),
         _details!.other != null ? Text(_details!.other!) : SizedBox(),
         Text(

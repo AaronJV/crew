@@ -16,7 +16,7 @@ Future<List<CrewQuest>> loadMissions() async {
   final Map<String, dynamic> manifestMap = json.decode(manifestContent);
 
   final missionFiles = manifestMap.keys
-      .where((String key) => key.contains('missions/'))
+      .where((String key) => key.contains('assets/quests/'))
       .where((String key) => key.contains('.json'))
       .toList();
 
@@ -52,6 +52,7 @@ class CrewAppState extends State<StatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return Provider<CrewDb>(
       create: (_) => CrewDb(),
       child: CrewQuests(
