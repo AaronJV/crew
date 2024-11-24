@@ -52,12 +52,12 @@
             "tasks": 4,
             "tiles": ["1"],
             "communication": "NONE",
-            "text": "Radar reports a dense meteorite field ahead. The Commander appoints a crew member to handle the necessary course recalculation.Since the task requires the highest concentration, this particular crew member can not communicate."
+            "text": "Radar reports a dense meteorite field ahead. The Commander appoints a crew member to handle the necessary course recalculation. Since the task requires the highest concentration, this particular crew member can not communicate."
         },
         {
             "tasks": 4,
             "tiles": ["Ω"],
-            "other": "After 1st Trick, draw 1 card from player to your Right",
+            "other": "After 1st Trick, draw 1 card from player to your right",
             "text": "You tense as you pass closely by the meteorites. In the excitement you mess up your paperwork, which causes a few minutes of confusion.\n\nImmediately after the 1st trick, each of you must draw a random card from the crew member to your right. Then continue playing normally"
         },
         {

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'models.dart';
+import 'datastore.dart';
 
 Future<List<CrewQuest>> loadMissions() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,7 +56,7 @@ class CrewAppState extends State<StatefulWidget> {
     return Provider<CrewDb>(
       create: (_) => CrewDb(),
       child: CrewQuests(
-        quests: this.quests,
+        quests: quests,
         changeQuest: (questId) => setState(() => selectedQuest = questId),
         selectedQuest: selectedQuest,
         child: Builder(

@@ -13,7 +13,7 @@ makeOceanTasks(BuildContext context, int? tasks) {
       Container(
         height: 60,
         width: 60,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
               image: AssetImage('assets/images/ocean/difficulty.png'),
               fit: BoxFit.cover),
@@ -22,7 +22,7 @@ makeOceanTasks(BuildContext context, int? tasks) {
       Text(
         tasks.toString(),
         style: TextStyle(
-            color: Color(0xFFCD1414),
+            color: const Color(0xFFCD1414),
             fontWeight: FontWeight.bold,
             fontSize: 18,
             shadows: [
@@ -61,14 +61,17 @@ class CrewTheme {
 
   ThemeData getThemeData() {
     return ThemeData(
+        appBarTheme: AppBarTheme(
+          color: primaryColor,
+        ),
         primaryColor: primaryColor,
         colorScheme: ColorScheme.fromSwatch(primarySwatch: primaryColor),
         textTheme: TextTheme(
-            headline6: TextStyle(
+            displayMedium: TextStyle(
                 fontSize: 14,
                 color: textAccentColor ?? primaryColor,
                 fontWeight: FontWeight.normal),
-            headline5: TextStyle(
+            displayLarge: TextStyle(
                 fontSize: 14,
                 color: textAccentColor ?? primaryColor,
                 fontWeight: FontWeight.bold)));
@@ -77,8 +80,8 @@ class CrewTheme {
   static CrewTheme getOceanTheme() => CrewTheme(
       primaryColor: createMaterialColor(Colors.blue[900]!),
       textAccentColor: Colors.blue[900],
-      missionBackgound: Color(0xFFCDDEEC),
-      missionBackgroundAlternate: Color(0xFFB9C5E0),
+      missionBackgound: const Color(0xFFCDDEEC),
+      missionBackgroundAlternate: const Color(0xFFB9C5E0),
       backgroundAsset: 'assets/images/ocean/background.jpg',
       passMarkerAsset: 'assets/images/ocean/pass-marker.png',
       failMarkerAsset: 'assets/images/ocean/fail-marker.png',
@@ -86,9 +89,9 @@ class CrewTheme {
 
   static CrewTheme getSpaceTheme() => CrewTheme(
       primaryColor: Colors.blueGrey,
-      textAccentColor: Color.fromARGB(255, 210, 35, 42),
-      missionBackgound: Color(0xFFE6E3D8),
-      missionBackgroundAlternate: Color(0xFFCFC9B3),
+      textAccentColor: const Color.fromARGB(255, 210, 35, 42),
+      missionBackgound: const Color(0xFFE6E3D8),
+      missionBackgroundAlternate: const Color(0xFFCFC9B3),
       backgroundAsset: 'assets/images/space/background.jpg',
       passMarkerAsset: 'assets/images/space/pass-marker.png',
       failMarkerAsset: 'assets/images/space/fail-marker.png',
@@ -97,15 +100,15 @@ class CrewTheme {
           return const SizedBox();
         }
         return Container(
-          margin: EdgeInsets.symmetric(vertical: 5),
+          margin: const EdgeInsets.symmetric(vertical: 5),
           width: 30,
           height: 45,
           alignment: Alignment.center,
           decoration: BoxDecoration(
               color: Colors.indigo.shade900,
               border: Border.all(color: Colors.white, width: 2),
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              boxShadow: [
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+              boxShadow: const [
                 BoxShadow(
                     color: Colors.black12,
                     spreadRadius: 0.5,
@@ -131,7 +134,7 @@ MaterialColor createMaterialColor(Color color) {
   for (int i = 1; i < 10; i++) {
     strengths.add(0.1 * i);
   }
-  strengths.forEach((strength) {
+  for (var strength in strengths) {
     final double ds = 0.5 - strength;
     swatch[(strength * 1000).round()] = Color.fromRGBO(
       r + ((ds < 0 ? r : (255 - r)) * ds).round(),
@@ -139,6 +142,6 @@ MaterialColor createMaterialColor(Color color) {
       b + ((ds < 0 ? b : (255 - b)) * ds).round(),
       1,
     );
-  });
+  }
   return MaterialColor(color.value, swatch);
 }

@@ -1,10 +1,8 @@
 import 'package:crew/crew_quests.dart';
-import 'package:crew/models.dart';
+import 'package:crew/datastore.dart';
 import 'package:crew/screens/add_crew.dart';
 import 'package:crew/widgets/crew_container.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class CrewList extends StatelessWidget {

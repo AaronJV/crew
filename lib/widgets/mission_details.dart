@@ -3,15 +3,16 @@ import 'dart:math';
 import 'package:collapsible/collapsible.dart';
 import 'package:confetti/confetti.dart';
 import 'package:crew/crew_quests.dart';
-import 'package:crew/models.dart';
+import 'package:crew/datastore.dart';
 import 'package:crew/widgets/mission_marker.dart';
+import 'package:crew/widgets/mission_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MissionDetails extends StatefulWidget {
   final AsyncSnapshot<MissionAttempt> snapshot;
 
-  MissionDetails(this.snapshot);
+  const MissionDetails(this.snapshot, {super.key});
 
   @override
   State<MissionDetails> createState() => MissionDetailsState();
@@ -23,7 +24,8 @@ class MissionDetailsState extends State<MissionDetails> {
   OverlayEntry? _entry;
 
   MissionDetailsState() {
-    _confettiController = ConfettiController(duration: Duration(seconds: 1));
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 1));
   }
 
   @override
@@ -36,7 +38,7 @@ class MissionDetailsState extends State<MissionDetails> {
 
   void playConfetti() {
     if (_entry == null) {
-      var makeWidget = (double dir) => ConfettiWidget(
+      makeWidget(double dir) => ConfettiWidget(
             confettiController: _confettiController,
             numberOfParticles: 30,
             blastDirection: dir,
@@ -54,7 +56,7 @@ class MissionDetailsState extends State<MissionDetails> {
                   ),
                 ],
               ));
-      Overlay.of(context)?.insert(_entry!);
+      Overlay.of(context).insert(_entry!);
     }
     setState(() => _confettiController.play());
   }
@@ -62,7 +64,7 @@ class MissionDetailsState extends State<MissionDetails> {
   @override
   Widget build(BuildContext context) {
     if (!widget.snapshot.hasData) {
-      return SizedBox();
+      return const SizedBox();
     }
 
     var missionAttempt = widget.snapshot.data!;
@@ -111,10 +113,10 @@ class MissionDetailsState extends State<MissionDetails> {
                 missionDetails.getMission(missionAttempt.id))),
         missionAttempt.id <= maxMission
             ? Text('Attempt number: ${missionAttempt.attempts}')
-            : SizedBox(),
+            : const SizedBox(),
         missionAttempt.id <= maxMission
             ? _MissionActions(missionAttempt)
-            : SizedBox()
+            : const SizedBox()
       ],
     );
   }
@@ -124,12 +126,12 @@ class _MissionActions extends StatelessWidget {
   static const double _buttonSize = 75;
   final MissionAttempt missionAttempt;
 
-  _MissionActions(this.missionAttempt);
+  const _MissionActions(this.missionAttempt);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 30),
+      padding: const EdgeInsets.symmetric(vertical: 30),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         GestureDetector(
             onTap: () => Provider.of<CrewDb>(context, listen: false)
@@ -161,11 +163,11 @@ class _MissionActions extends StatelessWidget {
 class _CurrentMissionDetails extends StatelessWidget {
   final CrewMission? _details;
 
-  _CurrentMissionDetails(this._details);
+  const _CurrentMissionDetails(this._details);
 
   Widget createTiles() {
     if (_details?.tiles == null) {
-      return SizedBox();
+      return const SizedBox();
     }
 
     return Row(
@@ -173,13 +175,15 @@ class _CurrentMissionDetails extends StatelessWidget {
         children: _details!.tiles!
             .map((tile) => Container(
                 alignment: Alignment.center,
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(color: Colors.black, boxShadow: [
-                  BoxShadow(
-                      color: Colors.black12,
-                      spreadRadius: 0.5,
-                      offset: Offset(2, 2))
-                ]),
+                margin: const EdgeInsets.all(5),
+                decoration: const BoxDecoration(
+                    color: Colors.black,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black12,
+                          spreadRadius: 0.5,
+                          offset: Offset(2, 2))
+                    ]),
                 width: 30,
                 height: 30,
                 child: Stack(children: [
@@ -192,7 +196,7 @@ class _CurrentMissionDetails extends StatelessWidget {
                             ..color = Colors.white,
                           fontWeight: FontWeight.bold)),
                   Text(tile,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 20,
                           color: Color(0xFF572E91),
                           fontWeight: FontWeight.bold))
@@ -200,76 +204,84 @@ class _CurrentMissionDetails extends StatelessWidget {
             .toList());
   }
 
+  Widget commModifiedWidget(BuildContext context) {
+    var text = _details!.commType == CommunicationType.deadZone ? '?' : '-2';
+
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: [
+        Row(
+          children: [
+            const SizedBox(width: 45),
+            Container(
+              width: 30,
+              height: 50,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  borderRadius:
+                      const BorderRadius.all(Radius.elliptical(30, 50)),
+                  gradient: LinearGradient(colors: [
+                    Colors.white.withOpacity(0),
+                    Colors.white,
+                  ], begin: Alignment.centerLeft, end: Alignment.centerRight)),
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Container(
+          height: 50,
+          width: 50,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage(
+                    CrewQuests.of(context).getTheme().passMarkerAsset),
+                fit: BoxFit.cover),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget createRealtimeWidget() {
+    if (_details?.realTimeData == null) {
+      return const SizedBox();
+    }
+
+    return MissionTimer(_details!.realTimeData!.seconds);
+  }
+
   Widget createTasksMarker(BuildContext context) {
     var tasksMarker = CrewQuests.of(context)
         .getTheme()
         .getTasksWidget(context, _details?.tasks);
 
-    if (_details?.commType == CommunicationType.DEAD_ZONE ||
-        _details?.commType == CommunicationType.RAPTURE_OF_DEEP) {
-      var text = _details!.commType == CommunicationType.DEAD_ZONE ? '?' : '-2';
-      return Row(
+    if (_details?.commType == CommunicationType.deadZone ||
+        _details?.commType == CommunicationType.raptureOfTheDeep) {
+      tasksMarker = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           tasksMarker,
-          SizedBox(width: 20),
-          Stack(
-            alignment: Alignment.centerLeft,
-            children: [
-              Row(
-                children: [
-                  SizedBox(width: 45),
-                  Container(
-                    width: 30,
-                    height: 50,
-                    alignment: Alignment.center,
-                    child: Text(
-                      text,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.all(Radius.elliptical(30, 50)),
-                        gradient: LinearGradient(
-                            colors: [
-                              Colors.white.withOpacity(0),
-                              Colors.white,
-                            ],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight)),
-                  ),
-                ],
-              ),
-              Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(
-                          CrewQuests.of(context).getTheme().passMarkerAsset),
-                      fit: BoxFit.cover),
-                ),
-              ),
-            ],
-          )
+          const SizedBox(width: 20),
+          commModifiedWidget(context),
         ],
       );
-    }
-
-    if (_details?.commType == CommunicationType.NONE ||
-        _details?.commType == CommunicationType.UNFAMILIAR_TERRAIN) {
-      var icon = _details?.commType == CommunicationType.NONE
+    } else if (_details?.commType == CommunicationType.none ||
+        _details?.commType == CommunicationType.unfamiliarTerrain) {
+      var icon = _details?.commType == CommunicationType.none
           ? Icons.hide_source
           : Icons.help_outline;
-      return Row(
+      tasksMarker = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           tasksMarker,
-          SizedBox(width: 20),
+          const SizedBox(width: 20),
           Stack(
             alignment: Alignment.center,
             children: [
@@ -294,13 +306,35 @@ class _CurrentMissionDetails extends StatelessWidget {
       );
     }
 
+    if (_details?.realTimeData != null) {
+      if (tasksMarker is Row) {
+        tasksMarker.children.addAll([
+          const SizedBox(
+            width: 10,
+          ),
+          createRealtimeWidget(),
+        ]);
+      } else {
+        tasksMarker = Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            tasksMarker,
+            const SizedBox(
+              width: 10,
+            ),
+            createRealtimeWidget()
+          ],
+        );
+      }
+    }
+
     return tasksMarker;
   }
 
   @override
   Widget build(BuildContext context) {
     if (_details == null) {
-      return Text(
+      return const Text(
         'Mission Not Found',
         textAlign: TextAlign.center,
       );
@@ -309,9 +343,16 @@ class _CurrentMissionDetails extends StatelessWidget {
       children: [
         createTasksMarker(context),
         createTiles(),
-        _details!.other != null ? Text(_details!.other!) : SizedBox(),
+        _details.other != null
+            ? Text(
+                '${_details.other!}\n',
+                style: const TextStyle(
+                    color: Colors.red, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              )
+            : const SizedBox(),
         Text(
-          _details!.text,
+          _details.text,
           textAlign: TextAlign.center,
         ),
       ],

@@ -1,9 +1,8 @@
 import 'package:crew/crew_quests.dart';
-import 'package:crew/models.dart';
+import 'package:crew/datastore.dart';
 import 'package:crew/widgets/mission_details.dart';
 import 'package:crew/widgets/mission_marker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -11,14 +10,14 @@ class Missions extends StatelessWidget {
   static const routeName = '/missions';
   final Crew crew;
 
-  Missions(this.crew);
+  const Missions(this.crew, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: CrewQuests.of(context).getTheme().missionBackgound,
         appBar: AppBar(
-          title: Text("Missions"),
+          title: const Text("Missions"),
         ),
         body: Column(children: [
           StreamBuilder(
@@ -49,13 +48,13 @@ class Missions extends StatelessWidget {
 class _CompletedMission extends StatelessWidget {
   final MissionAttempt missionAttempt;
 
-  _CompletedMission(this.missionAttempt);
+  const _CompletedMission(this.missionAttempt);
 
   @override
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
             color: missionAttempt.id % 2 == 0
                 ? CrewQuests.of(context).getTheme().missionBackgound
@@ -63,10 +62,10 @@ class _CompletedMission extends StatelessWidget {
         child: Row(children: [
           MissionMarker(missionId: missionAttempt.id, size: 30),
           Container(
-            padding: EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 10),
             child: Text(
-                'Completed on ${DateFormat.yMMMMd('en_US').format(missionAttempt.completionDate!)}\n' +
-                    'After ${missionAttempt.attempts} attempt${missionAttempt.attempts > 1 ? "s" : ""}'),
+                'Completed on ${DateFormat.yMMMMd('en_US').format(missionAttempt.completionDate!)}\n'
+                'After ${missionAttempt.attempts} attempt${missionAttempt.attempts > 1 ? "s" : ""}'),
           ),
         ]));
   }

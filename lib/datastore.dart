@@ -1,25 +1,22 @@
-import 'dart:convert';
+import 'package:drift/drift.dart';
+import './datastore_native.dart' if (dart.library.html) 'datastore_web.dart';
 import 'dart:developer';
-import 'dart:io';
-import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
+import 'dart:convert';
 
-part 'models.g.dart';
+part 'datastore.g.dart';
 
 class ListConverter extends TypeConverter<List<String>, String> {
   const ListConverter();
 
   @override
-  List<String>? mapToDart(String? fromDb) {
-    List? list = fromDb != null ? json.decode(fromDb) as List : null;
-    return list?.map((val) => val.toString()).toList() ?? null;
+  List<String> fromSql(String fromDb) {
+    List list = json.decode(fromDb) as List;
+    return list.map((val) => val.toString()).toList();
   }
 
   @override
-  String? mapToSql(List<String>? value) {
-    return value != null ? json.encode(value) : null;
+  String toSql(List<String> value) {
+    return json.encode(value);
   }
 }
 
@@ -34,7 +31,8 @@ class Crews extends Table {
 
 class MissionAttempts extends Table {
   IntColumn get id => integer()();
-  IntColumn get crewId => integer().customConstraint('REFERENCES crews(id)')();
+  IntColumn get crewId =>
+      integer().customConstraint('NOT NULL REFERENCES crews(id)')();
   IntColumn get attempts => integer().withDefault(const Constant(1))();
   DateTimeColumn get completionDate => dateTime().nullable()();
 
@@ -42,22 +40,10 @@ class MissionAttempts extends Table {
   Set<Column> get primaryKey => {id, crewId};
 }
 
-LazyDatabase _openConnection() {
-  // the LazyDatabase util lets us find the right location for the file async.
-  return LazyDatabase(() async {
-    // put the database file, called db.sqlite here, into the documents folder
-    // for your app.
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return VmDatabase(file);
-  });
-}
-
-@UseMoor(tables: [Crews, MissionAttempts])
+@DriftDatabase(tables: [Crews, MissionAttempts])
 class CrewDb extends _$CrewDb {
-  CrewDb() : super(_openConnection());
+  CrewDb() : super(openConnection());
 
-  @override
   int get schemaVersion => 1;
 
   Stream<List<Crew>> watchCrews({required String quest}) {
@@ -97,7 +83,7 @@ class CrewDb extends _$CrewDb {
     return (update(missionAttempts)
           ..where(
               (t) => t.id.equals(mission.id) & t.crewId.equals(mission.crewId)))
-        .write(mission.copyWith(completionDate: DateTime.now()))
+        .write(mission.copyWith(completionDate: Value(DateTime.now())))
         .then((value) => into(missionAttempts).insert(MissionAttemptsCompanion(
             crewId: Value(mission.crewId), id: Value(mission.id + 1))));
   }
@@ -147,7 +133,7 @@ class CrewDb extends _$CrewDb {
         .then((value) => null);
   }
 
-  Future<void> updateCrew(int? crewId,
+  Future<void> updateCrew(int crewId,
       {required List<String> members, String? name}) {
     return (update(crews)..where((t) => t.id.equals(crewId)))
         .write(CrewsCompanion(

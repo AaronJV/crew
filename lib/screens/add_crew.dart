@@ -1,6 +1,5 @@
 import 'package:crew/crew_quests.dart';
-import 'package:crew/models.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:crew/datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -60,7 +59,7 @@ class AddCrewState extends State<AddCrew> {
       var db = Provider.of<CrewDb>(context, listen: false);
       if (_crewId != null) {
         db
-            .updateCrew(_crewId,
+            .updateCrew(_crewId!,
                 members: _names.values.toList(), name: _crewNameController.text)
             .then((_) => Navigator.pop(context))
             .onError((error, stackTrace) => null);

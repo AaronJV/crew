@@ -1,7 +1,29 @@
 import 'package:crew/crew_theme.dart';
 import 'package:flutter/widgets.dart';
 
-enum CommunicationType { DEAD_ZONE, NONE, UNFAMILIAR_TERRAIN, RAPTURE_OF_DEEP }
+enum CommunicationType { deadZone, none, unfamiliarTerrain, raptureOfTheDeep }
+
+CommunicationType parseCommunicationType(String? value) {
+  if (value == null) {
+    return CommunicationType.none;
+  }
+
+  value = value.toString().toUpperCase();
+  for (var type in CommunicationType.values) {
+    if (type.toString() == 'CommunicationType.$value') {
+      return type;
+    }
+  }
+
+  return CommunicationType.none;
+}
+
+class RealTimeMissionData {
+  int seconds;
+  CommunicationType alternative;
+
+  RealTimeMissionData({required this.seconds, required this.alternative});
+}
 
 class CrewMission {
   int? tasks;
@@ -10,6 +32,7 @@ class CrewMission {
   List<String>? tiles;
   bool fivePlayerRule;
   CommunicationType? commType;
+  RealTimeMissionData? realTimeData;
 
   CrewMission.fromJson(Map<String, dynamic> json)
       : text = json['text'] ?? '',
@@ -19,26 +42,25 @@ class CrewMission {
     if (json['tiles'] != null) {
       tiles = [for (var tile in json['tiles']) tile.toString()];
     }
-    if (json['communication'] != null) {
-      var value = json['communication'].toString().toUpperCase();
-      for (var type in CommunicationType.values) {
-        if (type.toString() == 'CommunicationType.' + value) {
-          commType = type;
-          break;
-        }
-      }
+    commType = parseCommunicationType(json['communication']);
+
+    if (json['realtime'] != null) {
+      realTimeData = RealTimeMissionData(
+          seconds: json['realtime']['time'],
+          alternative:
+              parseCommunicationType(json['realtime']['communication']));
     }
   }
 }
 
-enum QuestTheme { SPACE, OCEAN }
+enum QuestTheme { space, ocean }
 
 QuestTheme parseQuestTheme(String value) {
   if (value.toUpperCase() == "OCEAN") {
-    return QuestTheme.OCEAN;
+    return QuestTheme.ocean;
   }
 
-  return QuestTheme.SPACE;
+  return QuestTheme.space;
 }
 
 class CrewQuest {
@@ -66,13 +88,13 @@ class CrewQuests extends InheritedWidget {
   final List<CrewQuest> quests;
   final void Function(String) _changeQuest;
 
-  CrewQuests(
-      {required this.quests,
+  const CrewQuests(
+      {super.key,
+      required this.quests,
       required this.selectedQuest,
-      required Widget child,
+      required super.child,
       required void Function(String) changeQuest})
-      : _changeQuest = changeQuest,
-        super(child: child);
+      : _changeQuest = changeQuest;
 
   static CrewQuests of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<CrewQuests>()!;
@@ -90,6 +112,7 @@ class CrewQuests extends InheritedWidget {
         return quest;
       }
     }
+    return null;
   }
 
   int getMaxMission() {
@@ -101,13 +124,10 @@ class CrewQuests extends InheritedWidget {
   }
 
   CrewTheme getTheme() {
-    switch (_getSelectedQuest()?.theme) {
-      case QuestTheme.OCEAN:
-        return CrewTheme.getOceanTheme();
-      case QuestTheme.SPACE:
-      default:
-        return CrewTheme.getSpaceTheme();
+    if (_getSelectedQuest()?.theme == QuestTheme.ocean) {
+      return CrewTheme.getOceanTheme();
     }
+    return CrewTheme.getSpaceTheme();
   }
 
   CrewMission? getMission(int missionId) {
@@ -118,6 +138,7 @@ class CrewQuests extends InheritedWidget {
           ? quest.missions[missionId - 1]
           : null;
     }
+    return null;
   }
 
   bool usesFivePlayerRule(int missionId) {
