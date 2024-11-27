@@ -61,7 +61,7 @@ class CrewAppState extends State<StatefulWidget> {
         selectedQuest: selectedQuest,
         child: Builder(
           builder: (context) => MaterialApp(
-            title: 'Flutter Demo',
+            title: 'Crew Companion',
             theme: CrewQuests.of(context).getTheme().getThemeData(),
             initialRoute: '/',
             onGenerateRoute: (RouteSettings settings) {
