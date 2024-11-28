@@ -1,0 +1,92 @@
+{
+    "name": "Deimos Adventure",
+    "theme": "spcae",
+    "id": "47f81193-06f5-5a93-8fe9-6ad6658ebcf5",
+    "missions": [
+        {
+            "text": "You receive a radio message near Deimos, one of the Martian moons. Based on your photos, a research team is now working there and is asking for your help. Locate the ship and prepare for the docking maneuver by precisely approaching the two lock modules. A 4-card must win at least one 9-card",
+            "fivePlayerRule": true,
+            "label": "A1"
+        },
+        {
+            "text": "After a successful docking, you meet up with the scientist on board the Morphinos, Dr. Z. Taylor. He reports that his colleagues are scattered across Deimos taking soil samples. However, some of the jobs require your specialized equipment. Make your way to the specified coordinates to assist the researchers. Your commander must win exactly 3 tricks. These tricks must not include cards with the value of 7, 8, or 9.",
+            "fivePlayerRule": true,
+            "label": "A2"
+        },
+        {
+            "text": "You locate the site immediately. The rock is deep black and seems to swallow any light. An analysis of the surface reveals such a dense and interwoven molecular structure that even your drill may not be able to break through. Let’s see how far you can go. A task not completed does not terminate the mission. How many tasks will you complete?",
+            "fivePlayerRule": true,
+            "tasks": 22,
+            "label": "A3"
+        },
+        {
+            "text": "You have recovered a strange black stone. It lies in your pocket like lead and slows you down on your way to visit geologist K. A. Hart. She shows you an amazing cave, on the ceiling of which something shimmers pink in the light  your flashlights. You need a plan to get up. Without consulting the commander, the remaining crew members must decide how many tricks the commander needs to win.",
+            "other": "Remaining crew decides the number of tricks for the commander",
+            "fivePlayerRule": true,
+            "label": "B1"
+        },
+        {
+            "text": "One of you will have to approach the pink spot on the ceiling carefully with the help of a precision jet pack. Since there are no anchoring points on the cave ceiling, the surface must be examined in floating mode in order to recover the object. The commander chooses a crew member to take one task card and only win that 1 trick.",
+            "tasks": 1,
+            "fivePlayerRule": true,
+            "label": "B2"
+        },
+        {
+            "text": "The stone is actually pink and is strangely as light as cotton, but your detailed analysis will have to wait. You are now bein sent to visit Dr. B. Cranston, who has excitedly reported on some kind of strange liquid that he has found. No communication is allowed at all. If successful, try again with five tasks, then six, and so on. How far will you get?",
+            "tasks": 4,
+            "fivePlayerRule": true,
+            "communication": "DEAD_ZONE",
+            "label": "B3"
+        },
+        {
+            "text": "Your team reaches a small crevice and you can hardly believe your eyes: the bluish substance seems to have electro-viscous properties! One minute it seems to be solid and the next it flows slowly between the stones. You need the right tools to be able to collect it. No trick may start with a blue or a rocket card.",
+            "fivePlayerRule": true,
+            "label": "C1"
+        },
+        {
+            "text": "As soon as it hits the bottom of your container, the liquid settles into a solid form. Dr. Cranston will take you to the chemist T. Kwan to get her opinion on the strange phenomenon. Whilst there, she asks you to examine a blinding light in the crevice that has overloaded her optical sensors. A 1-card must win at least two 9-cards.",
+            "fivePlayerRule": true,
+            "label": "C2"
+        },
+        {
+            "text": "You reduce the absorption capacity of your sensors so that, bit by bit, you are able to scan the crevice and locate the source. Even with your technical adaptions, your display is still showing a bright yellow object. Slowly and carefully you reset your machines. You may only start completing tasks from the 3rd trick onwards. If successful, try again completing tasks but only from the 4th trick onwards. How far will you get?",
+            "delayedComms": 4,
+            "tasks": 5,
+            "fivePlayerRule": true,
+            "label": "C3"
+        },
+        {
+            "text": "As you place the claw-shaped stone into a transporter box, you note that it is still slowly pulsating with a bright yellow light. J.L. Scott, the team’s research director, has discovered a crimson object that emits tremendous heat. You will need to wear your protective suits in order to salvage the object. No crew member may win 2 tricks in a row.",
+            "other": "No crew member may win 2 tricks in a row.",
+            "fivePlayerRule": true,
+            "label": "D1"
+        },
+        {
+            "text": "In order not to destroy the glowing stone, you need to carefully construct a cryobubble around the area. Once the correct temperature has been reached, the stone must immediately be sealed into a heat-safe box. Both tasks require absolute precision! One crew member must not win any tricks and another crew member must only win 1 trick.",
+            "fivePlayerRule": true,
+            "label": "D2"
+        },
+        {
+            "text": "Done! But there is barely time to catch your breath before T. Oliver, the newcomer to the research team, contacts you in a state of great excitement and asks you to make your way to him immediately. Lay out two tasks per crew member and distribute them according to the usual rules. Each crew member must win both their tasks with the same trick.",
+            "other": "Win both tasks in one trick",
+            "tasks": 2,
+            "fivePlayerRule": true,
+            "label": "D3"
+        },
+        {
+            "text": "The researcher has used the latest sonar technology to discover a cavity that defies the laws of natural science as we know it. Within the cavity, you can make out yet another strange object. You require a steady hand on the drill to break into the cavity without too much disturbance. The 1 Rocket card must win at least one 1 card.",
+            "fivePlayerRule": true,
+            "label": "E1"
+        },
+        {
+            "text": "As you reach the object you see it is another stone, this one with a greenish hue. The moment you release it from the wall it whips out of your hand and races towards your equipment. The holding boxes break open and all six stones seem to merge together in a blinding flash that sears your eyes. Better get yourself to safety! Each Crew member gets random tasks (depending on the number of crew members).",
+            "fivePlayerRule": true,
+            "label": "E2"
+        },
+        {
+            "text": "As the light fades and your vision returns, you see in front of you an object that your instruments tell you shouldn’t exist: A new element measuring unimaginable potential energy. Once adapted, it will be a gift to all humanity. You call it Lindorium. Each 8-card must win a trick. If you were successful, try again with the 7-cards and so on. How far will you get?",
+            "fivePlayerRule": true,
+            "label": "E3"
+        }
+    ]
+}

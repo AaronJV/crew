@@ -26,7 +26,8 @@ class CrewContainer extends StatelessWidget {
 
   Widget _crewStats(BuildContext context) {
     var db = Provider.of<CrewDb>(context);
-    var maxMission = CrewQuests.of(context).getMaxMission();
+    var quests = CrewQuests.of(context);
+    var maxMission = quests.getMaxMission();
     createRow<T>(
             {required String label,
             required Stream<T?> stream,
@@ -59,8 +60,9 @@ class CrewContainer extends StatelessWidget {
       createRow<int>(
           label: 'Current Mission:',
           stream: db.getCurrentMission(crew.id),
-          formatter: (data) =>
-              data <= maxMission ? data.toString() : 'All missions completed!')
+          formatter: (data) => data <= maxMission
+              ? quests.getMissionLabel(data)
+              : 'All missions completed!')
     ]);
   }
 

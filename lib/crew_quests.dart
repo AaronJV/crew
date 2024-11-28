@@ -28,6 +28,7 @@ class RealTimeMissionData {
 class CrewMission {
   int? tasks;
   String text;
+  String? label;
   String? other;
   List<String>? tiles;
   bool fivePlayerRule;
@@ -36,6 +37,7 @@ class CrewMission {
 
   CrewMission.fromJson(Map<String, dynamic> json)
       : text = json['text'] ?? '',
+        label = json['label'],
         fivePlayerRule = json['fivePlayerRule'] ?? false,
         tasks = json['tasks'],
         other = json['other'] {
@@ -143,5 +145,15 @@ class CrewQuests extends InheritedWidget {
 
   bool usesFivePlayerRule(int missionId) {
     return getMission(missionId)?.fivePlayerRule ?? false;
+  }
+
+  String getMissionLabel(int missionId) {
+    var current = getMission(missionId);
+
+    if (current?.label?.isNotEmpty ?? false) {
+      return current!.label!;
+    }
+
+    return missionId.toString();
   }
 }

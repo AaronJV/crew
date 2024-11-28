@@ -9,6 +9,7 @@ class MissionMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var quest = CrewQuests.of(context);
     return Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.only(top: 5),
@@ -16,11 +17,11 @@ class MissionMarker extends StatelessWidget {
         width: size,
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: CrewQuests.of(context).usesFivePlayerRule(missionId)
+                image: quest.usesFivePlayerRule(missionId)
                     ? const AssetImage('assets/images/mission-marker-gold.png')
                     : const AssetImage('assets/images/mission-marker.png'))),
         child: Text(
-          missionId.toString(),
+          quest.getMissionLabel(missionId),
           style: TextStyle(color: Colors.white, fontSize: size / 3),
         ));
   }
